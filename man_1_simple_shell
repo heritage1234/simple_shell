@@ -1,45 +1,101 @@
-.TH simple_shell "1.0" "13 June 2022" "simple_shell man page" "simple_shell man page"
+.TH SIMPLE_SHELL 1 "15 June 2022" "1.0" "custom man page"
 .SH NAME
-.B shell
-- a standard command interpreter similar to the GNU Bourne-Again SHell (sh).
+.B Simple Shell
+- command language interpreter
 .SH SYNOPSIS
-#include "shell.h"
-.PP
-.shell
-.PP
-shell [option_name] [argument ...]
+.B Simple Shell
 .SH DESCRIPTION
-shell is a command programming language that executes commands read from a terminal or a file. It is the program that is running when a user logs into the system.
-.SH INVOCATION
-If no arguments are present and if the standard input of the shell is connected to a terminal, the shell is considered an interactive shell.
-.PP
-If the standard input is used with a pipeline operator, |, to connect the command, such as echo "qwerty" | ./shell, then the shell is in non-interactive mode.
-.SH LEXICAL STRUCTURE
-The shell reads input in terms of lines from a file and breaks it up into words at whitespace (blanks and tabs).
-.SH RETURN
-Upon successful return, the shell will always return a 0 for success. If the shell program fails when a command is entered incorrectly or does not exist in the $PATH, then shell program will exit out of the child process and display an error message corresponding to the error the user committed and return with a prompt.
-.SH BUILT-INS
-.PP
-env - When entered, shell prints the current environment to standard output.
-.PP
-exit - When entered, shell exits out of the shell program.
-
-.SH FILES
-.I
+Simple shell is one version of a command language interpreter that executes commands read from the standard input. It's functionality is limited to certain shell builtin functions found in the environmental variable
+.I PATH.
+It does not yet handle piping, redirection, pattern matching, variable expansions, and more extra functions.
+.SS Invocation
+An
+.I interactive
+simple shell can be invoked by typing ./simple_shell. Meanwhile, a
+.I non-interactive
+simple shell can also be invoked via a pipe (e.g. echo "/bin/ls" | ./simple_shell).
+.SS Command Execution
+After a command has been split into words, if it results in a simple command and an optional list of arguments, the following actions are taken.
 .sp
-$HOME/.profile
-.I
+If the command name contains no slashes, the shell attempts to locate it. If there exists a shell function by that name that function is invoked. If the name does not match a function, the shell searches for it in the list of shell builtins. If a match is found, that builtin is invoked.
 .sp
-/etc/profile
-.I
+If the name is neither a shell function nor a builtin, and contains no slashes, the simple shell searches each element of the environmental variable PATH for a directory containing an executable file by that name. If the search is unsuccessful, the simple shell prints an error message "Error: File or description not found."
+.SS Sample Functions
 .sp
-/etc/shells
-.SH ALSO SEE
-.PP
-man sh, execve(2), environ
-.SH NOTES
-All files and code used in .shell were created and compiled on Ubuntu 14.04.4 LTS using GCC 4.8.4
+echo
+.I [arguments]
+      prints to standard output the argument(s) given and prints a newline
+.sp
+ls
+.I [[flags]...[arguments]]
+      lists files in the current directory according to the flags given by user
+.sp
+pwd
+      prints working directories
+.sp
+whereis
+.I [command]
+      prints to standard output which directory the function or shell builtin can be found
+.SS Shell Builtin Commands
+.sp
+cd
+      changes directory and updates environmental variables OLDPWD and PWD
+.sp
+env
+      prints environmental variables
+.sp
+exit
+      exits out of simple shell and returns to user's original shell
+.sp
+setenv
+      creates non-existing or modifies existing environmental variable within shell session
+.sp
+unsetenv
+      removes existing environmental variable within shell session
+.SH EXAMPLE
+To
+.I invoke
+simple shell:
+.sp
+.RS
+(your_terminal)$ ./simple_shell
+.RE
+.RS
+.I $
+.RE
+.sp
+Sample Usage:
+.sp
+.RS
+.I $
+echo "This is pretty cool!"
+.RE
+.RS
+.I This is pretty cool!
+.RE
+.RS
+.I $
+ls -l /tmp
+.RE
+.RS
+.I total 4
+.RE
+.RS
+.I drwx------ 2 vagrant vagrant 4096 Mar 19 20:22 ssh-xTKqci
+.RE
+.sp
+To leave simple shell and return to your terminal:
+.sp
+.RS
+.I $
+exit
+.RE
+.RS
+(your_terminal)$
+.RE
 .SH BUGS
-There are many features and builtin commands that are not implimented in this simple shell such as aliases, cd, and logical operators. When 
-.SH AUTHOR
+Bugs...
+.SH SEE ALSO
+.I bash(1), sh(1), ksh(1), csh(1)
+.SH AUTHORS
 heritage 1234 & chika ukpai
